@@ -1,0 +1,29 @@
+<resources>
+    <string name="app_name">projectKcal</string>
+    <string name="login_page">LOGIN PAGE</string>
+    <string name="register_page">Register Page</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="confirm_password">Confirm password</string>
+    <string name="login_to_account">Login to account</string>
+    <string name="go_to_login">Already have an account? Click here to log in.</string>
+    <string name="logo">logo</string>
+    <string name="to_register">Don\'t have an account? Click here to register.</string>
+    <string name="action_search_text">Search</string>
+    <string name="action_account_settings">Account settings</string>
+    <string name="action_logout_text">Log out</string>
+    <string name="register_text">Register</string>
+    <string name="first_name">First Name</string>
+    <string name="last_name">Last Name</string>
+    <string name="biography">Biography</string>
+    <string name="save_setting">Save Settings</string>
+    <string name="choose_photo">Choose photo</string>
+    <string name="add_title">Title</string>
+    <string name="description">Description</string>
+    <string name="content">Content</string>
+    <string name="add_post">Add Post</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="add_comment">Add a comment...</string>
+</resources>
