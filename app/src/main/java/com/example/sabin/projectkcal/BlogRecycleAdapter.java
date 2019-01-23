@@ -2,8 +2,9 @@ package com.example.sabin.projectkcal;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
@@ -16,7 +17,6 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -35,9 +35,12 @@ import javax.annotation.Nullable;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
+import static com.example.sabin.projectkcal.MainActivity.blogPostFragment;
+
 public class BlogRecycleAdapter extends RecyclerView.Adapter<BlogRecycleAdapter.ViewHolder> {
 
     public List<BlogPost> blogList;
+    public List<User> userList;
     public Context context;
 
     private FirebaseFirestore mFirestore;
@@ -45,8 +48,9 @@ public class BlogRecycleAdapter extends RecyclerView.Adapter<BlogRecycleAdapter.
 
     Boolean currUserLiked = false;
 
-    public BlogRecycleAdapter(List<BlogPost> blogList) {
+    public BlogRecycleAdapter(List<BlogPost> blogList, List<User> userList) {
         this.blogList = blogList;
+        this.userList = userList;
     }
 
     @NonNull
@@ -90,28 +94,16 @@ public class BlogRecycleAdapter extends RecyclerView.Adapter<BlogRecycleAdapter.
 
         }
 
-        String user_id = blogList.get(position).getUser_id();
+        final String user_id = blogList.get(position).getUser_id();
 
-        mFirestore.collection("Users").document(user_id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+        final String firstName = userList.get(position).getFirst();
+        final String lastName = userList.get(position).getLast();
+        String profileImageUrl = userList.get(position).getImage();
 
-                if (task.isSuccessful()) {
-                    String firstName = task.getResult().getString("first");
-                    String lastName = task.getResult().getString("last");
-                    String profileImageUrl = task.getResult().getString("image");
-
-                    holder.setUserData(firstName, lastName, profileImageUrl);
-                } else {
-                    //
-                }
-            }
-        });
+        holder.setUserData(firstName, lastName, profileImageUrl);
 
 
         //Likes
-
-
         mFirestore.collection("Posts/" + blogPostId + "/Likes").addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
@@ -184,6 +176,35 @@ public class BlogRecycleAdapter extends RecyclerView.Adapter<BlogRecycleAdapter.
             }
         });
 
+        holder.titleView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                goToBlogPostFragment(blogPostId, user_id, view);
+            }
+        });
+
+        holder.blogImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                goToBlogPostFragment(blogPostId, user_id, view);
+            }
+        });
+
+        holder.userNameView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //Toast.makeText(context, firstName + " " + lastName, Toast.LENGTH_SHORT).show();
+                goToUserProfile(user_id, view);
+            }
+        });
+
+        holder.userProfileImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                goToUserProfile(user_id, view);
+            }
+        });
+
 
 
     }
@@ -213,6 +234,8 @@ public class BlogRecycleAdapter extends RecyclerView.Adapter<BlogRecycleAdapter.
 
             commBtn = mView.findViewById(R.id.blog_comm_btn);
             likeBtn = mView.findViewById(R.id.blog_like_btn);
+            titleView = mView.findViewById(R.id.acc_blog_title);
+
         }
 
         public void setDescText(String descString) {
@@ -221,7 +244,6 @@ public class BlogRecycleAdapter extends RecyclerView.Adapter<BlogRecycleAdapter.
         }
 
         public void setTitleText(String titleString) {
-            titleView = mView.findViewById(R.id.blog_title);
             titleView.setText(titleString);
 
         }
@@ -260,13 +282,30 @@ public class BlogRecycleAdapter extends RecyclerView.Adapter<BlogRecycleAdapter.
             else
                 likeCounter.setText(" ");
 
-            if (currUserLiked)
-                likeCounter.setTextColor(Color.parseColor("#263238"));
-            else
-                likeCounter.setTextColor(Color.parseColor("#90A4AE"));
-
-
         }
+
+    }
+
+    public void goToBlogPostFragment(String blogPostId, String user_id, View view) {
+        Bundle args = new Bundle();
+        args.putString("blogPostId", blogPostId);
+        args.putString("userId", user_id);
+
+        AppCompatActivity activity = (AppCompatActivity) view.getContext();
+        //BlogPostFragment blogPostFragment = new BlogPostFragment();
+        blogPostFragment.setArguments(args);
+        activity.getSupportFragmentManager().beginTransaction().replace(R.id.main_container, blogPostFragment).addToBackStack(null).commit();
+    }
+
+    public void goToUserProfile(String user_id, View view) {
+        Bundle args = new Bundle();
+        args.putString("userId", user_id);
+
+        AppCompatActivity activity = (AppCompatActivity) view.getContext();
+        AnotherAccountFragment anotherAccountFragment = new AnotherAccountFragment();
+        anotherAccountFragment.setArguments(args);
+        activity.getSupportFragmentManager().beginTransaction().replace(R.id.main_container, anotherAccountFragment).addToBackStack(null).commit();
+
     }
 
 }

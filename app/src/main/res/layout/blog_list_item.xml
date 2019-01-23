@@ -107,7 +107,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/blog_title"
+                app:layout_constraintTop_toBottomOf="@+id/acc_blog_title"
                 app:srcCompat="@drawable/rectangle" />
 
             <TextView
@@ -125,7 +125,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/blog_image" />
 
             <TextView
-                android:id="@+id/blog_title"
+                android:id="@+id/acc_blog_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"

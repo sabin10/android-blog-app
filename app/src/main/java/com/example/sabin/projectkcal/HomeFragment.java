@@ -2,6 +2,7 @@ package com.example.sabin.projectkcal;
 
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -9,6 +10,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -29,21 +32,20 @@ import javax.annotation.Nullable;
  */
 public class HomeFragment extends Fragment {
 
-    RecyclerView homeListView;
-    List<BlogPost> blogList;
     FirebaseFirestore mFirestore;
     FirebaseAuth mAuth;
 
+    RecyclerView homeListView;
+    List<BlogPost> blogList;
     BlogRecycleAdapter blogRecycleAdapter;
+    List<User> userList;
 
     DocumentSnapshot lastVisible;
     Boolean isFirstPageFirstLoaded = true;
 
-
     public HomeFragment() {
         // Required empty public constructor
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -54,8 +56,9 @@ public class HomeFragment extends Fragment {
 
         homeListView = view.findViewById(R.id.home_blog_list);
         blogList = new ArrayList<>();
+        userList = new ArrayList<>();
 
-        blogRecycleAdapter = new BlogRecycleAdapter(blogList);
+        blogRecycleAdapter = new BlogRecycleAdapter(blogList, userList);
 
         homeListView.setLayoutManager(new LinearLayoutManager(container.getContext()));
         homeListView.setAdapter(blogRecycleAdapter);
@@ -77,8 +80,6 @@ public class HomeFragment extends Fragment {
                 }
             });
 
-
-
             Query firstQuery = mFirestore.collection("Posts").orderBy("timestamp", Query.Direction.DESCENDING).limit(3);
 
             firstQuery.addSnapshotListener(getActivity(), new EventListener<QuerySnapshot>() {
@@ -87,30 +88,41 @@ public class HomeFragment extends Fragment {
 
                     if (isFirstPageFirstLoaded) {
                         lastVisible = queryDocumentSnapshots.getDocuments().get(queryDocumentSnapshots.size() - 1);
+                        blogList.clear();
+                        userList.clear();
                     }
 
                     for (DocumentChange doc : queryDocumentSnapshots.getDocumentChanges()) {
                         if (doc.getType() == DocumentChange.Type.ADDED) {
 
                             String blogPostId = doc.getDocument().getId();
-                            BlogPost blogPost = doc.getDocument().toObject(BlogPost.class).withId(blogPostId);
-                            if (isFirstPageFirstLoaded) {
-                                blogList.add(blogPost);
-                            } else {
-                                blogList.add(0, blogPost);
-                            }
+                            final BlogPost blogPost = doc.getDocument().toObject(BlogPost.class).withId(blogPostId);
 
-                            blogRecycleAdapter.notifyDataSetChanged();
+                            String blogUserId = doc.getDocument().getString("user_id");
+                            mFirestore.collection("Users").document(blogUserId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                    if (task.isSuccessful()) {
+                                        User user = task.getResult().toObject(User.class);
+
+                                        if (isFirstPageFirstLoaded) {
+                                            blogList.add(blogPost);
+                                            userList.add(user);
+                                        } else {
+                                            blogList.add(0, blogPost);
+                                            userList.add(0, user);
+                                        }
+
+                                        blogRecycleAdapter.notifyDataSetChanged();
+                                    }
+                                }
+                            });
                         }
                     }
-
                     isFirstPageFirstLoaded = false;
-
                 }
             });
         }
-
-
         // Inflate the layout for this fragment
         return view;
     }
@@ -135,19 +147,30 @@ public class HomeFragment extends Fragment {
                             if (doc.getType() == DocumentChange.Type.ADDED) {
 
                                 String blogPostId = doc.getDocument().getId();
-                                BlogPost blogPost = doc.getDocument().toObject(BlogPost.class).withId(blogPostId);
-                                blogList.add(blogPost);
+                                final BlogPost blogPost = doc.getDocument().toObject(BlogPost.class).withId(blogPostId);
 
-                                blogRecycleAdapter.notifyDataSetChanged();
+                                String blogUserId = doc.getDocument().getString("user_id");
+
+                                mFirestore.collection("Users").document(blogUserId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+
+                                        if (task.isSuccessful()) {
+                                            User user = task.getResult().toObject(User.class);
+
+                                            blogList.add(blogPost);
+                                            userList.add(user);
+
+                                            blogRecycleAdapter.notifyDataSetChanged();
+                                        }
+                                    }
+                                });
                             }
                         }
 
                     }
                 }
             });
-
-
         }
     }
-
 }

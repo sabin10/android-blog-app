@@ -55,13 +55,14 @@ public class MainActivity extends AppCompatActivity {
     FirebaseAuth mAuth;
     FirebaseFirestore mFirestore;
 
-    String currentUserId;
+    public static String currentUserId;
 
     BottomNavigationView bottomNav;
 
     HomeFragment homeFragment;
     NotificationFragment notificationFragment;
     AccountFragment accountFragment;
+    public static BlogPostFragment blogPostFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,7 +78,9 @@ public class MainActivity extends AppCompatActivity {
 
             mMainToolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.main_toolbar);
             setSupportActionBar(mMainToolbar);
-            getSupportActionBar().setTitle("Main Page");
+            getSupportActionBar().setTitle("shakesy.");
+            getSupportActionBar().getThemedContext();
+            mMainToolbar.setTitleTextColor(getResources().getColor(R.color.colorPrimaryDark));
 
             bottomNav = findViewById(R.id.bottom_nav);
             BottomNavigationViewHelper.removeShiftMode(bottomNav);
@@ -85,6 +88,7 @@ public class MainActivity extends AppCompatActivity {
             homeFragment = new HomeFragment();
             notificationFragment = new NotificationFragment();
             accountFragment = new AccountFragment();
+            blogPostFragment = new BlogPostFragment();
 
 
             initializeFragment();
@@ -106,11 +110,7 @@ public class MainActivity extends AppCompatActivity {
                             replaceFragment(accountFragment, currentFragment);
                             return true;
                         case R.id.bottom_add:
-                            //TODO
                             sendToAddPost();
-                            return true;
-                        case R.id.bottom_search:
-                            //TODO
                             return true;
                         default:
                             return false;
@@ -160,7 +160,6 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_logout_btn) {
             logOut();
-            //return true;
         } else if (item.getItemId() == R.id.action_settings_btn) {
             sendToSettings();
         } else if (item.getItemId() == R.id.action_addpost_btn) {

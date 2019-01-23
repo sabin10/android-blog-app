@@ -6,9 +6,6 @@
         android:id="@+id/bottom_home"
         android:icon="@mipmap/action_home" />
     <item
-        android:id="@+id/bottom_search"
-        android:icon="@mipmap/action_search" />
-    <item
         android:id="@+id/bottom_add"
         android:icon="@mipmap/action_add_post" />
     <item

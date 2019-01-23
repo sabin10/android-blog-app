@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -19,6 +20,7 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
@@ -26,93 +28,102 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Nullable;
-
 public class CommentsActivity extends AppCompatActivity {
 
-    android.support.v7.widget.Toolbar mToolbar;
-    EditText commField;
-    ImageView sendCommBtn;
+    private Toolbar commentToolbar;
 
-    String blogPostId;
-    String currUserId;
+    private EditText comment_field;
+    private ImageView comment_post_btn;
 
-    FirebaseFirestore mFirestore;
-    FirebaseAuth mAuth;
+    private RecyclerView comment_list;
+    private CommentsRecyclerAdapter commentsRecyclerAdapter;
+    private List<Comments> commentsList;
 
-    RecyclerView commentsListView;
-    CommentsRecyclerAdapter commentsRecyclerAdapter;
-    List<Comment> commentsList;
+    private FirebaseFirestore firebaseFirestore;
+    private FirebaseAuth firebaseAuth;
+
+    private String blog_post_id;
+    private String current_user_id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_comments);
 
-        mToolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.comm_toolbar);
-        setSupportActionBar(mToolbar);
+        commentToolbar = findViewById(R.id.comment_toolbar);
+        setSupportActionBar(commentToolbar);
         getSupportActionBar().setTitle("Comments");
 
-        commField = findViewById(R.id.comm_write);
-        sendCommBtn = findViewById(R.id.comm_send_btn);
-        commentsListView = findViewById(R.id.comm_list);
+        firebaseAuth = FirebaseAuth.getInstance();
+        firebaseFirestore = FirebaseFirestore.getInstance();
+
+        current_user_id = firebaseAuth.getCurrentUser().getUid();
+        blog_post_id = getIntent().getStringExtra("blogPostId");
+
+        comment_field = findViewById(R.id.comment_field);
+        comment_post_btn = findViewById(R.id.comment_post_btn);
+        comment_list = findViewById(R.id.comment_list);
 
         //RecyclerView Firebase List
         commentsList = new ArrayList<>();
         commentsRecyclerAdapter = new CommentsRecyclerAdapter(commentsList);
-        //comment_list.setHasFixedSize(true);
-        commentsListView.setLayoutManager(new LinearLayoutManager(this));
-        commentsListView.setAdapter(commentsRecyclerAdapter);
+        comment_list.setHasFixedSize(true);
+        comment_list.setLayoutManager(new LinearLayoutManager(this));
+        comment_list.setAdapter(commentsRecyclerAdapter);
 
-        mAuth = FirebaseAuth.getInstance();
-        mFirestore = FirebaseFirestore.getInstance();
-        currUserId = mAuth.getCurrentUser().getUid();
 
-        blogPostId = getIntent().getStringExtra("blogPostId");
+        Query query = firebaseFirestore.collection("Posts/" + blog_post_id + "/Comments").orderBy("timestamp", Query.Direction.ASCENDING);
 
-        mFirestore.collection("Posts/" + blogPostId + "/Comments")
-                .addSnapshotListener(CommentsActivity.this, new EventListener<QuerySnapshot>() {
+        query.addSnapshotListener(CommentsActivity.this, new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
+
+                if (!documentSnapshots.isEmpty()) {
+
+                    for (DocumentChange doc : documentSnapshots.getDocumentChanges()) {
+
+                        if (doc.getType() == DocumentChange.Type.ADDED) {
+
+                            String commentId = doc.getDocument().getId();
+                            Comments comments = doc.getDocument().toObject(Comments.class);
+                            commentsList.add(comments);
+                            commentsRecyclerAdapter.notifyDataSetChanged();
+
+                        }
+                    }
+                }
+            }
+        });
+
+        comment_post_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                String comment_message = comment_field.getText().toString();
+
+
+                Map<String, Object> commentsMap = new HashMap<>();
+                commentsMap.put("message", comment_message);
+                commentsMap.put("user_id", current_user_id);
+                commentsMap.put("timestamp", FieldValue.serverTimestamp());
+
+                firebaseFirestore.collection("Posts/" + blog_post_id + "/Comments").add(commentsMap).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
                     @Override
-                    public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                    public void onComplete(@NonNull Task<DocumentReference> task) {
 
-                        if (!queryDocumentSnapshots.isEmpty()) {
+                        if(!task.isSuccessful()){
 
-                            for (DocumentChange doc : queryDocumentSnapshots.getDocumentChanges()) {
-                                if (doc.getType() == DocumentChange.Type.ADDED) {
+                            Toast.makeText(CommentsActivity.this, "Error Posting Comment : " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
 
-                                    Comment comment = doc.getDocument().toObject(Comment.class);
-                                    commentsList.add(comment);
-                                    commentsRecyclerAdapter.notifyDataSetChanged();
-                                }
-                            }
+                        } else {
 
+                            comment_field.setText("");
 
                         }
 
                     }
                 });
 
-        sendCommBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                String commMessage = commField.getText().toString();
-
-                Map<String, Object> commentMap = new HashMap<>();
-                commentMap.put("message", commMessage);
-                commentMap.put("user_id", currUserId);
-                commentMap.put("timestamp", FieldValue.serverTimestamp());
-
-                mFirestore.collection("Posts/" + blogPostId + "/Comments").add(commentMap).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentReference> task) {
-                        if (!task.isSuccessful())
-                            Toast.makeText(CommentsActivity.this, "Error Comment: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                        else
-                            commField.setText("");
-
-                    }
-                });
             }
         });
 

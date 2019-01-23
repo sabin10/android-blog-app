@@ -7,52 +7,49 @@
     tools:context=".CommentsActivity">
 
     <android.support.v7.widget.Toolbar
-        android:id="@+id/comm_toolbar"
+        android:id="@+id/comment_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorToolbarWhite"
-        android:minHeight="?attr/actionBarSize"
-        android:theme="?attr/actionBarTheme"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/comm_list"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/comm_write"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/comm_toolbar" />
+        app:layout_constraintTop_toTopOf="parent"></android.support.v7.widget.Toolbar>
 
     <EditText
-        android:id="@+id/comm_write"
+        android:id="@+id/comment_field"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
         android:ems="10"
-        android:hint="@string/add_comment"
-        android:inputType="textPersonName"
-        android:textColor="@color/colorPrimaryDark"
-        android:textSize="14sp"
+        android:hint="Your Comment here ..."
+        android:inputType="textMultiLine"
+        android:padding="12dp"
+        android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/comm_send_btn"
+        app:layout_constraintEnd_toStartOf="@+id/comment_post_btn"
         app:layout_constraintStart_toStartOf="parent" />
 
     <ImageView
-        android:id="@+id/comm_send_btn"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
+        android:id="@+id/comment_post_btn"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
-        app:layout_constraintBottom_toBottomOf="@+id/comm_write"
+        android:layout_marginBottom="16dp"
+        android:padding="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/comm_write"
         app:srcCompat="@mipmap/action_send_btn_gray" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/comment_list"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/comment_field"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/comment_toolbar" />
+
 </android.support.constraint.ConstraintLayout>

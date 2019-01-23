@@ -5,45 +5,36 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <android.support.v4.widget.CircleImageView
-        android:id="@+id/comm_user_image"
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/comment_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
         android:layout_marginTop="16dp"
+        android:src="@drawable/ellipse"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:src="@drawable/ellipse" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/comm_user_name"
+        android:id="@+id/comment_username"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:text="Sabin Hantu"
-        android:textColor="@color/colorPrimary"
-        android:textSize="12sp"
-        app:layout_constraintStart_toEndOf="@+id/comm_user_image"
-        app:layout_constraintTop_toTopOf="@+id/comm_user_image" />
+        android:layout_marginTop="16dp"
+        android:text="Username"
+        android:textColor="@color/colorPrimaryDark"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@+id/comment_image"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/comm_message"
-        android:layout_width="0dp"
+        android:id="@+id/comment_message"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginBottom="8dp"
-        android:text="BLABLA"
+        android:text="Loading Comment..."
         android:textColor="@color/colorPrimaryDark"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/comm_user_image"
-        app:layout_constraintTop_toBottomOf="@+id/comm_user_name" />
+        app:layout_constraintStart_toEndOf="@+id/comment_image"
+        app:layout_constraintTop_toBottomOf="@+id/comment_username" />
 
 </android.support.constraint.ConstraintLayout>

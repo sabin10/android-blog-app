@@ -3,12 +3,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:tag="anotherAccountTAG"
     tools:context=".HomeFragment">
 
     <!-- TODO: Update blank fragment layout -->
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/user_blogs_list"
+        android:id="@+id/another_user_blog_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 </FrameLayout>

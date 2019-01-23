@@ -2,14 +2,16 @@ package com.example.sabin.projectkcal;
 
 import java.util.Date;
 
-public class Comment {
+public class Comments {
 
     private String message, user_id;
     private Date timestamp;
 
-    public Comment() {}
+    public Comments(){
 
-    public Comment(String message, String user_id, Date timestamp) {
+    }
+
+    public Comments(String message, String user_id, Date timestamp) {
         this.message = message;
         this.user_id = user_id;
         this.timestamp = timestamp;
