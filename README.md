@@ -1,14 +1,21 @@
 ## Introduction
 
+##### [Download APK](https://drive.google.com/open?id=1ILVyFbxDWHwlyCvQLjeu4mBgHlZD8TXK)
+
 ![](https://i.imgur.com/2byrWrD.png)
 
-Social Network Blog App, basically Instagram + content for every post.
+Social Network Blog App.
 
-Developed by Sabin Hantu, computer science student.
+Sabin Hantu, computer science student.
 
 1st Android App, developed for learning reasons only.
 
-##### [Download APK](https://drive.google.com/open?id=1ILVyFbxDWHwlyCvQLjeu4mBgHlZD8TXK)
+## What I learned
+
++ Android concepts(activities, fragments, views).
++ Recycler View with 1 or more items.
++ Communicating with a database(i.e. Firebase Firestore): adding and getting data.
++ Using 3rd party libraries(Glide, Image-Cropper, Compressor, etc.).
 
 ## Functionalities
 
