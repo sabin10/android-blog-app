@@ -21,6 +21,7 @@ Sabin Hantu, computer science student.
 
 + User Authentification using Firebase Authentification with email.
 + Every user has its own blog stored in Firestore.
++ User's profile picture or name can be updated.
 + Follow (read this blog) system implemented as a collection in Firestore for each user.
 + Like system and comment fragment for each post.
 + Storing images and thumbs via Firebase Storage.
