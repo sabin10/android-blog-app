@@ -29,6 +29,8 @@ Sabin Hantu, computer science student.
 
 ## Screenshots
 
+![](https://i.imgur.com/uvhbGTW.jpg)
+
 ![](https://i.imgur.com/LHhqGun.png) ![](https://i.imgur.com/fMRRwDe.png)
 
 ![](https://i.imgur.com/ualeXVE.png) ![](https://i.imgur.com/ucgLpFJ.png)
