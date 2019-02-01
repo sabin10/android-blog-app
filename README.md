@@ -29,7 +29,7 @@ Sabin Hantu, computer science student.
 
 ## Screenshots
 
-![](https://i.imgur.com/uvhbGTW.jpg)
+![](https://i.imgur.com/XfLfxJO.jpg)
 
 ![](https://i.imgur.com/LHhqGun.png) ![](https://i.imgur.com/fMRRwDe.png)
 
