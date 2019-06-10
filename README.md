@@ -13,8 +13,8 @@ Sabin Hantu, computer science student.
 ## What I learned
 
 + Android concepts(activities, fragments, views).
-+ Recycler View with 1 or more items.
-+ Communicating with a database(i.e. Firebase Firestore): adding and getting data.
++ Recycler View.
++ Communicating with a database(i.e. Firebase Firestore).
 + Using 3rd party libraries(Glide, Image-Cropper, Compressor, etc.).
 
 ## Functionalities
